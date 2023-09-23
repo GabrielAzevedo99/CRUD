@@ -16,7 +16,6 @@ public class ProjetoCrud1 {
     public static void main(String[] args) {
         // TODO code application logic here
 
-        String nomee;
+        String nome;
     }
-    
 }
