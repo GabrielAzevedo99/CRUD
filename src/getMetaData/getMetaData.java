@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package getMetaData;
 
 /**
@@ -16,39 +12,95 @@ public class getMetaData {
     
     public static void main(String[] args) {
         
-        getMeta();
+        GetSCHEMA();
         
     }
+    
+    public static void GetSCHEMA() {
+    
+        conexaoo getConexao = new conexaoo();
+        String catalogName;
+        
+        try (Connection conexao = getConexao.getConnection()) {
+            
+            DatabaseMetaData metaData = conexao.getMetaData();
 
-    public static void getMeta() {
+            // Obtenha os catálogos (que podem ser equivalentes aos schemas em alguns bancos de dados)
+            ResultSet catalogs = metaData.getCatalogs();
+
+            while (catalogs.next()) {
+                //Pega o nome dos catalogos do banco de dados
+                catalogName = catalogs.getString("TABLE_CAT");
+                
+                System.out.println("Nome da catalog: " + catalogName);
+                
+                getTABELAS(catalogName);
+            }
+            catalogs.close();
+        } 
+        
+        
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void getTABELAS(String catalogName) {
 
         conexaoo getConexao = new conexaoo();
         
         int n = 0;
+        
+        String NomeTabela = null;
 
-        try (Connection conexao = getConexao.getConnection();) {
+        try (Connection conexao = getConexao.getConnection()) {
             
             DatabaseMetaData metaData = conexao.getMetaData();
-
+            
             String[] types = {"TABLE"};
             
             //Busca as tabelas do banco de dados
-            ResultSet tabelas = metaData.getTables(null, null, "%", types);
+            ResultSet tabelas = metaData.getTables(catalogName, null, "%", types);
 
             while (tabelas.next()) {
                 //Pega o nome das tabelas do banco de dados
-                String NomeTabela = tabelas.getString("TABLE_NAME");
+                NomeTabela = tabelas.getString("TABLE_NAME");
+
                 System.out.println("Nome da tabela: " + NomeTabela);
-                n++;
+
+                //n++;
+                getCAMPOS(NomeTabela);
             }
-            System.out.println("Número de tabelas: " + n);
             
-            
+            //System.out.println("Número de tabelas: " + n);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
+    
+    public static void getCAMPOS(String NomeTabela) {
+        
+        conexaoo getConexao = new conexaoo();
+        
+        try (Connection conexao = getConexao.getConnection()) {
+            
+            DatabaseMetaData metaData = conexao.getMetaData();
+            
+            // Obtenha as colunas da tabela
+            ResultSet columns = metaData.getColumns(null, null, NomeTabela, null);
 
+            while (columns.next()) {
+
+            String columnName = columns.getString("COLUMN_NAME");
+            String columnType = columns.getString("TYPE_NAME");
+            System.out.println("   Coluna: " + columnName + ", Tipo: " + columnType);
+            }
+                
+            
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
