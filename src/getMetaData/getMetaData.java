@@ -19,16 +19,28 @@ public class getMetaData {
         System.out.println(base);
 
         List<String> tabelas = getTABELAS(base);
-        String tabela = tabelas.get(1);
+        int T = tabelas.size();
+        System.out.println("O tamanho da T é: " + T);
+        String tabela = tabelas.get(2);
         System.out.println(tabela);
 
-        List<String> Nomes = getAtributo(base, tabela);
-        String nome = Nomes.get(4);
+        List<String> Nomes = getNomeAtributo(base, tabela);
+        String nome = Nomes.get(1);
 
         List<String> Tipos = getTipoAtributo(base, tabela);
-        String tipo = Tipos.get(4);
+        String tipo = Tipos.get(1);
+        
+        List<String> restricoes = getRestricoes(base, tabela, nome);
+        //String restricao = restricoes.get(2);
 
-        System.out.println("   Coluna: " + nome + "   Tipo: " + tipo);
+        StringBuilder result = new StringBuilder();
+        for (String elemento : restricoes) {
+            result.append(elemento).append(" - ");
+        }
+
+        String restricao = result.toString();
+        
+        System.out.println("   Coluna: " + nome + "   Tipo: " + tipo + "   Restrições: " + restricao);
 
         List<String> Registros = getRegistros(base, tabela, nome);
         String Registro = Registros.get(0);
@@ -69,7 +81,7 @@ public class getMetaData {
         return tabelas;
     }
 
-    public static List<String> getAtributo(String schema, String tabela) throws SQLException {
+    public static List<String> getNomeAtributo(String schema, String tabela) throws SQLException {
 
         conexaoo getConexao = new conexaoo(schema);
         Connection connect = getConexao.getConnection();
@@ -123,6 +135,43 @@ public class getMetaData {
         }
         return tipos;
     }
+    
+    public static List<String> getRestricoes(String schema, String tabela, String nome) throws SQLException {
+
+        conexaoo getConexao = new conexaoo(schema);
+        Connection connect = getConexao.getConnection();
+        //Statement statement = connect.createStatement();
+
+        PreparedStatement pstmt = connect.prepareStatement("SELECT COLUMN_KEY, EXTRA, IS_NULLABLE, CHARACTER_MAXIMUM_LENGTH FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ? AND COLUMN_NAME = ?;");
+        
+        pstmt.setString(1, tabela);
+        pstmt.setString(2, nome);
+
+        ResultSet resultSet = pstmt.executeQuery();
+
+        List<String> COLUMN_KEY = new ArrayList<>();
+        List<String> EXTRA = new ArrayList<>();
+        List<String> IS_NULLABLE = new ArrayList<>();
+        List<String> CHARACTER_MAXIMUM_LENGTH = new ArrayList<>();
+        List<String> restricoes = new ArrayList<>();
+
+        while (resultSet.next()) {
+            String R1 = resultSet.getString(1);
+            COLUMN_KEY.add(R1);
+            String R2 = resultSet.getString(2);
+            EXTRA.add(R2);
+            String R3 = resultSet.getString(3);
+            IS_NULLABLE.add(R3);
+            String R4 = resultSet.getString(4);
+            CHARACTER_MAXIMUM_LENGTH.add(R4);
+            
+            restricoes.addAll(COLUMN_KEY);
+            restricoes.addAll(EXTRA);
+            restricoes.addAll(IS_NULLABLE);
+            restricoes.addAll(CHARACTER_MAXIMUM_LENGTH);
+        }
+        return restricoes;
+    }
 
     public static List<String> getRegistros(String schema, String tabela, String nome) throws SQLException {
 
@@ -132,7 +181,7 @@ public class getMetaData {
 
         PreparedStatement pstmt = connect.prepareStatement("SELECT " + nome + " FROM " + tabela);
 
-        //pstmt.setString(1, nome);
+        //pstmt.setString(1, nomee);
         //pstmt.setString(2, tabela);
         ResultSet resultSet = pstmt.executeQuery();
 
