@@ -1,10 +1,10 @@
-package getMetaData;
+package Model;
 
 /**
  *
  * @author THE KING
  */
-import conexao.conexaoo;
+import Model.conexaoo;
 
 import java.sql.*;
 import java.util.ArrayList;

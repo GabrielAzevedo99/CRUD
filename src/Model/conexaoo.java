@@ -1,11 +1,11 @@
-package conexao;
+package Model;
 
 import java.sql.*;
 
 public class conexaoo {
     
     //private String bd = null;
-    private String URL = null;
+    private String URL;
     private static final String USUARIO = "root";
     private static final String SENHA = "admin";
     
