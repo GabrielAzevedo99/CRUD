@@ -6,8 +6,8 @@ public class conexaoo {
     
     //private String bd = null;
     private String URL;
-    private static final String USUARIO = "root";
-    private static final String SENHA = "admin";
+    private static String USUARIO = "root";
+    private static String SENHA = "admin";
     
     public conexaoo() {
         this.URL = "jdbc:mysql://localhost:3307/";
@@ -48,5 +48,18 @@ public class conexaoo {
             System.out.println("Não conseguiu desconectar do BD!");
             e.printStackTrace();
         }
+    }
+    
+        // Métodos SET
+    public void setURL(String url) {
+        this.URL = url;
+    }
+    
+    public static void setUsuario(String usuario) {
+        USUARIO = usuario;
+    }
+    
+    public static void setSenha(String senha) {
+        SENHA = senha;
     }
 }
