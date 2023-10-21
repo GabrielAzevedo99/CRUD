@@ -8,6 +8,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import Controller.ConexaoController;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,10 +18,14 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+
 /**
  *
  * @author GABRIEL
  */
+
+//@ LUCAS OLHAR DECLARAÇÃO FIM PAGINA
+
 public class CadastroBd extends JFrame {
 
     JTextField ip;
@@ -128,4 +134,26 @@ public class CadastroBd extends JFrame {
         String passtext = pass.getText();
 
     }
+
+    //CONEXÃO COM BANCO FUNCIONANDO PERFEITO TESTAR @LUCAS "CONTROLLER.CONEXAOCONTROLLER.JAVA" TEM MEDODO PARA RODAR!
+        
+    public String getIpText() {
+        return ip.getText();
+    }
+
+    public String getUserText() {
+        return user.getText();
+    }
+
+    public String getPassText() {
+        return new String(pass.getPassword());
+    }
+
+    public void setConnectButtonAction(ActionListener actionListener) {
+        conectar.addActionListener(actionListener);
+    }
 }
+
+
+
+
