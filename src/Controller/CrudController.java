@@ -7,15 +7,22 @@ import java.util.Scanner;
 public class CrudController {
 
     private conexaoo conexao;
+    private String usuario; // USADO PARA TESTE NO CRUDE OU SEJA PARA TESTE RODA SO EXECUTAR ARQUIVO
+    private String senha; // USADO PARA TESTE NO CRUDE OU SEJA PARA TESTE RODA SO EXECUTAR ARQUIVO
 
     public CrudController() {
         this.conexao = null;
     }
 
-    public void conectarAoBanco(String nomeDoBanco) {
+    public void conectarAoBanco(String nomeDoBanco, String usuario, String senha) {
         this.conexao = new conexaoo(nomeDoBanco);
+        this.usuario = usuario; // SALVA USUARIO
+        this.senha = senha; // ASALVA SENHA
+        conexaoo.setUsuario(usuario); // Configure o usuário na classe conexaoo
+        conexaoo.setSenha(senha); // Configure a senha na classe conexaoo
     }
-
+//----------------------------------------
+    
     public void inserirRegistro(String tabela, String coluna, String valor) throws SQLException {
         Connection connection = conexao.getConnection();
         try {
@@ -82,15 +89,25 @@ public class CrudController {
             conexao.desconectar(connection);
         }
     }
+    
+    // -------------------------------------------------------------------------------------
 
-        public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException {
         CrudController crud = new CrudController();
         Scanner scanner = new Scanner(System.in);
 
         System.out.println("Digite o nome do banco de dados: ");
         String nomeDoBanco = scanner.nextLine();
-        crud.conectarAoBanco(nomeDoBanco);
 
+        System.out.println("Digite o usuário do banco: ");
+        String usuario = scanner.nextLine();
+
+        System.out.println("Digite a senha do banco: ");
+        String senha = scanner.nextLine();
+
+        crud.conectarAoBanco(nomeDoBanco, usuario, senha); // Passa o usuário e senha
+
+        // Resto do código permanece o mesmo
         
         System.out.println("Digite o nome da tabela: ");
         String tabela = scanner.nextLine();
@@ -149,6 +166,7 @@ public class CrudController {
         }
     }
 }
+
 
 
 
