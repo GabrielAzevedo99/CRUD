@@ -107,7 +107,6 @@ public class CrudController {
 
         crud.conectarAoBanco(nomeDoBanco, usuario, senha); // Passa o usuário e senha
 
-        // Resto do código permanece o mesmo
         
         System.out.println("Digite o nome da tabela: ");
         String tabela = scanner.nextLine();
