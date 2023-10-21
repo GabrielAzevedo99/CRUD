@@ -6,15 +6,15 @@ public class conexaoo {
     
     //private String bd = null;
     private String URL;
-    private static String USUARIO = "root";
-    private static String SENHA = "admin";
+    private static String USUARIO;
+    private static String SENHA;
     
     public conexaoo() {
-        this.URL = "jdbc:mysql://localhost:3307/";
+        this.URL = "jdbc:mysql://localhost:3306/";
     }
     
     public conexaoo(String base) {
-        this.URL = "jdbc:mysql://localhost:3307/" + base;
+        this.URL = "jdbc:mysql://localhost:3306/" + base;
     }
 
     public Connection getConnection() throws SQLException {
