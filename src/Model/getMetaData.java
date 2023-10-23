@@ -14,7 +14,7 @@ public class getMetaData {
 
     public static void main(String[] args) throws SQLException {
 
-        List<String> bases = GetSCHEMA();
+        /*List<String> bases = GetSCHEMA();
         String base = bases.get(0);
         System.out.println(base);
 
@@ -45,13 +45,13 @@ public class getMetaData {
         List<String> Registros = getRegistros(base, tabela, nome);
         String Registro = Registros.get(0);
 
-        System.out.println("   Registro: " + Registro);
+        System.out.println("   Registro: " + Registro);*/
     }
 
-    public static List<String> GetSCHEMA() throws SQLException {
+    public static List<String> GetSCHEMA(String IP, String USER, String PASS) throws SQLException {
 
         //conexaoo getConexao = new conexaoo();
-        conexaoo getConexao = new conexaoo();
+        conexaoo getConexao = new conexaoo(IP, USER, PASS);
         Connection connect = getConexao.getConnection();
         Statement statement = connect.createStatement();
         ResultSet resultSet = statement.executeQuery("SHOW DATABASES WHERE `Database` NOT IN ('mysql', 'information_schema', 'performance_schema', 'sys', 'phpmyadmin')");
@@ -65,9 +65,10 @@ public class getMetaData {
         return bases;
     }
 
-    public static List<String> getTABELAS(String schema) throws SQLException {
+    public static List<String> getTABELAS(String IP, String USER, String PASS, String schema) throws SQLException {
 
-        conexaoo getConexao = new conexaoo(schema);
+        conexaoo getConexao = new conexaoo(IP, USER, PASS);
+        getConexao.setIPbase(schema);
         Connection connect = getConexao.getConnection();
         Statement statement = connect.createStatement();
         ResultSet resultSet = statement.executeQuery("SHOW TABLES");
@@ -81,9 +82,10 @@ public class getMetaData {
         return tabelas;
     }
 
-    public static List<String> getNomeAtributo(String schema, String tabela) throws SQLException {
+    public static List<String> getNomeAtributo(String IP, String USER, String PASS, String schema, String tabela) throws SQLException {
 
-        conexaoo getConexao = new conexaoo(schema);
+        conexaoo getConexao = new conexaoo(IP, USER, PASS);
+        getConexao.setIPbase(schema);
         Connection connect = getConexao.getConnection();
         //Statement statement = connect.createStatement();
 
@@ -113,9 +115,10 @@ public class getMetaData {
         return atributos;
     }
 
-    public static List<String> getTipoAtributo(String schema, String tabela) throws SQLException {
+    public static List<String> getTipoAtributo(String IP, String USER, String PASS, String schema, String tabela) throws SQLException {
 
-        conexaoo getConexao = new conexaoo(schema);
+        conexaoo getConexao = new conexaoo(IP, USER, PASS);
+        getConexao.setIPbase(schema);
         Connection connect = getConexao.getConnection();
         //Statement statement = connect.createStatement();
 
@@ -136,9 +139,10 @@ public class getMetaData {
         return tipos;
     }
     
-    public static List<String> getRestricoes(String schema, String tabela, String nome) throws SQLException {
+    public static List<String> getRestricoes(String IP, String USER, String PASS, String schema, String tabela, String nome) throws SQLException {
 
-        conexaoo getConexao = new conexaoo(schema);
+        conexaoo getConexao = new conexaoo(IP, USER, PASS);
+        getConexao.setIPbase(schema);
         Connection connect = getConexao.getConnection();
         //Statement statement = connect.createStatement();
 
@@ -173,9 +177,10 @@ public class getMetaData {
         return restricoes;
     }
 
-    public static List<String> getRegistros(String schema, String tabela, String nome) throws SQLException {
+    public static List<String> getRegistros(String IP, String USER, String PASS, String schema, String tabela, String nome) throws SQLException {
 
-        conexaoo getConexao = new conexaoo(schema);
+        conexaoo getConexao = new conexaoo(IP, USER, PASS);
+        getConexao.setIPbase(schema);
         Connection connect = getConexao.getConnection();
         //Statement statement = connect.createStatement();
 

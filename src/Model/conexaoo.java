@@ -6,15 +6,17 @@ public class conexaoo {
     
     //private String bd = null;
     private String URL;
-    private static String USUARIO;
-    private static String SENHA;
-    
-    public conexaoo() {
-        this.URL = "jdbc:mysql://localhost:3306/";
+    private String USUARIO;
+    private String SENHA;
+
+    public conexaoo(String IP, String USER, String PASS) {
+        this.URL = IP;
+        this.USUARIO = USER;
+        this.SENHA = PASS;
     }
-    
-    public conexaoo(String base) {
-        this.URL = "jdbc:mysql://localhost:3306/" + base;
+
+    public void setIPbase(String base) {
+        this.URL = URL + base;
     }
 
     public Connection getConnection() throws SQLException {
@@ -48,18 +50,5 @@ public class conexaoo {
             System.out.println("Não conseguiu desconectar do BD!");
             e.printStackTrace();
         }
-    }
-    
-        // Métodos SET
-    public void setURL(String url) {
-        this.URL = url;
-    }
-    
-    public static void setUsuario(String usuario) {
-        USUARIO = usuario;
-    }
-    
-    public static void setSenha(String senha) {
-        SENHA = senha;
     }
 }
