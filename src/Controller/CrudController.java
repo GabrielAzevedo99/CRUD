@@ -1,28 +1,27 @@
 package Controller;
 
 import Model.conexaoo;
-import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class CrudController {
 
     private conexaoo conexao;
-    private String usuario; // USADO PARA TESTE NO CRUDE OU SEJA PARA TESTE RODA SO EXECUTAR ARQUIVO
-    private String senha; // USADO PARA TESTE NO CRUDE OU SEJA PARA TESTE RODA SO EXECUTAR ARQUIVO
 
     public CrudController() {
         this.conexao = null;
     }
 
-    public void conectarAoBanco(String nomeDoBanco, String usuario, String senha) {
-        this.conexao = new conexaoo(nomeDoBanco);
-        this.usuario = usuario; // SALVA USUARIO
-        this.senha = senha; // ASALVA SENHA
-        conexaoo.setUsuario(usuario); // Configure o usuário na classe conexaoo
-        conexaoo.setSenha(senha); // Configure a senha na classe conexaoo
+    public void conectarAoBanco(String host, int porta, String nomeDoBanco, String usuario, String senha) {
+        this.conexao = new conexaoo("jdbc:mysql://" + host + ":" + porta + "/" + nomeDoBanco, usuario, senha);
     }
-//----------------------------------------
     
+    //-------------------------------------------------CRUD EM SI----------------------------------------------------
+
     public void inserirRegistro(String tabela, String coluna, String valor) throws SQLException {
         Connection connection = conexao.getConnection();
         try {
@@ -71,7 +70,7 @@ public class CrudController {
         try {
             PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM " + tabela);
             ResultSet resultSet = pstmt.executeQuery();
-            
+
             while (resultSet.next()) {
                 // Ler os dados de cada registro
                 int registroId = resultSet.getInt("id");
@@ -90,30 +89,33 @@ public class CrudController {
         }
     }
     
-    // -------------------------------------------------------------------------------------
+    //-------------------------------------------------FIM CRUD----------------------------------------------------
 
-    public static void main(String[] args) throws SQLException {
+      public static void main(String[] args) throws SQLException {
         CrudController crud = new CrudController();
         Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Digite o host do banco de dados (ex: localhost): ");
+        String host = scanner.nextLine();
+
+        System.out.println("Digite a porta do banco de dados (ex: 3306): ");
+        int porta = scanner.nextInt();
+        scanner.nextLine();
 
         System.out.println("Digite o nome do banco de dados: ");
         String nomeDoBanco = scanner.nextLine();
 
-        System.out.println("Digite o usuário do banco: ");
+        System.out.println("Digite o nome de usuário: ");
         String usuario = scanner.nextLine();
 
-        System.out.println("Digite a senha do banco: ");
+        System.out.println("Digite a senha: ");
         String senha = scanner.nextLine();
 
-        crud.conectarAoBanco(nomeDoBanco, usuario, senha); // Passa o usuário e senha
+        crud.conectarAoBanco(host, porta, nomeDoBanco, usuario, senha);
 
-        
         System.out.println("Digite o nome da tabela: ");
         String tabela = scanner.nextLine();
 
-            System.out.println("Digite o nome da coluna: ");
-            String coluna = scanner.nextLine();
-            
         while (true) {
             System.out.println("Escolha uma ação:");
             System.out.println("1. Inserir registro");
@@ -131,45 +133,42 @@ public class CrudController {
 
             switch (escolha) {
                 case 1:
-                   
-                    System.out.println("Digite um valor: "); //Tirar depois
+                    System.out.println("Digite o nome da coluna: ");
+                    String coluna = scanner.nextLine();
+
+                    System.out.println("Digite um valor: ");
                     String valor = scanner.nextLine();
-            
+
                     crud.inserirRegistro(tabela, coluna, valor);
                     break;
                 case 2:
- 
                     System.out.println("Digite o ID do registro a ser atualizado: ");
                     int idAtualizacao = scanner.nextInt();
                     scanner.nextLine(); // Limpar a nova linha
+
+                    System.out.println("Digite o nome da coluna: ");
+                    String colunaAtualizacao = scanner.nextLine();
+
                     System.out.println("Digite o novo valor: ");
                     String novoValor = scanner.nextLine();
-                    crud.atualizarRegistro(tabela, coluna, novoValor, idAtualizacao);
+
+                    crud.atualizarRegistro(tabela, colunaAtualizacao, novoValor, idAtualizacao);
                     break;
                 case 3:
-                    System.out.println("Digite o ID do registro a ser excluido: ");
+                    System.out.println("Digite o ID do registro a ser excluído: ");
                     int idExclusao = scanner.nextInt();
                     scanner.nextLine();
-                    
-                    
-                    
+
                     crud.excluirRegistro(tabela, idExclusao);
                     break;
                 case 4:
                     crud.listarRegistros(tabela);
                     break;
                 default:
-                    System.out.println("Escolha uma ação valida.");
+                    System.out.println("Escolha uma ação válida.");
                     break;
             }
         }
     }
 }
-
-
-
-
-
-
-
 
