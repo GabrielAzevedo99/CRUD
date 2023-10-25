@@ -2,14 +2,18 @@ package Controller;
 
 import Model.conexaoo;
 import View.CadastroBd;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Scanner;
+import javax.swing.JOptionPane;
 
 public class ConexaoController {
     private conexaoo conexaoModel;
     private CadastroBd cadastroView;
+    
+    //jdbc:mysql://localhost:3306/
 
     public ConexaoController(conexaoo conexaoModel, CadastroBd cadastroView) {
         this.conexaoModel = conexaoModel;
@@ -30,23 +34,23 @@ public class ConexaoController {
         String usertext = cadastroView.getUserText();
         String passtext = cadastroView.getPassText();
 
-        // Configure a conexão usando os dados fornecidos
-        conexaoModel.setURL(iptext);
-        conexaoo.setUsuario(usertext);
-        conexaoo.setSenha(passtext);
+        // Configure a conexão
+        conexaoModel = new conexaoo(iptext, usertext, passtext);
 
-        conexaoModel.getConnection();
+        Connection connection = conexaoModel.getConnection();
+        
+        if (connection != null) {
+            JOptionPane.showMessageDialog(null, "Conexão bem-sucedida!");
+            conexaoModel.desconectar(connection);
+        } else {
+            JOptionPane.showMessageDialog(null, "Erro ao conectar.", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        // Crie instâncias do modelo e da visão
-        conexaoo conexaoModel = new conexaoo();
         CadastroBd cadastroView = new CadastroBd();
-
-        // Crie uma instância do controlador
-        ConexaoController controller = new ConexaoController(conexaoModel, cadastroView);
 
         while (true) {
             System.out.println("Escolha uma opção:");
@@ -56,16 +60,16 @@ public class ConexaoController {
 
             switch (escolha) {
                 case 1:
-                    // Inicie a ação de conexão
+                    // Inicie conexão
+                    ConexaoController controller = new ConexaoController(new conexaoo(cadastroView.getIpText(), cadastroView.getUserText(), cadastroView.getPassText()), cadastroView);
                     try {
                         controller.connect();
-                        System.out.println("Conexão bem-sucedida!");
                     } catch (SQLException ex) {
-                        System.out.println("Erro ao conectar: " + ex.getMessage());
+                        JOptionPane.showMessageDialog(null, "Erro ao conectar: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
                     }
                     break;
                 case 2:
-                    // Encerre o programa
+                    // Encerre
                     System.out.println("Saindo do programa.");
                     System.exit(0);
                     break;
@@ -76,7 +80,3 @@ public class ConexaoController {
         }
     }
 }
-
-
-
-
