@@ -6,6 +6,25 @@ import java.util.List;
 import java.util.Scanner;
 
 public class MetaDataController {
+    
+ //--------------------------------------return para View------------------------------------------
+
+    public static List<String> GetSCHEMA(String IP, String USER, String PASS) throws SQLException {
+        getMetaData metaData = new getMetaData();
+        return metaData.GetSCHEMA(IP, USER, PASS);
+    }
+
+    public static List<String> getTABELAS(String IP, String USER, String PASS, String base) throws SQLException {
+        getMetaData metaData = new getMetaData();
+        return metaData.getTABELAS(IP, USER, PASS, base);
+    }
+
+    public static List<String> getNomeAtributo(String IP, String USER, String PASS, String base, String tabela) throws SQLException {
+        getMetaData metaData = new getMetaData();
+        return metaData.getNomeAtributo(IP, USER, PASS, base, tabela);
+    }
+    
+  //----------------------------------------------fim return para View------------------------------------------  
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -22,8 +41,9 @@ public class MetaDataController {
         String PASS = scanner.nextLine();
 
         getMetaData metaData = new getMetaData();
+        
 
-        try {
+      try {
             List<String> bases = metaData.GetSCHEMA(IP, USER, PASS);
             System.out.println("Bases de dados disponíveis:");
             for (String base : bases) {
@@ -47,9 +67,10 @@ public class MetaDataController {
             for (String nome : Nomes) {
                 System.out.println(nome);
             }
-
+            
             System.out.println("Digite o nome da coluna: ");
             String nome = scanner.nextLine();
+
 
             List<String> Tipos = metaData.getTipoAtributo(IP, USER, PASS, base, tabela);
             String tipo = Tipos.get(Nomes.indexOf(nome));
