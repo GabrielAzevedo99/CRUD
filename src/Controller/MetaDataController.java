@@ -1,5 +1,6 @@
 package Controller;
 
+import Model.conexaoo;
 import Model.getMetaData;
 import java.sql.SQLException;
 import java.util.List;
@@ -7,28 +8,29 @@ import java.util.Scanner;
 
 public class MetaDataController {
     
+    conexaoo meta = new conexaoo();
  //--------------------------------------return para View------------------------------------------
 
-    public static List<String> GetSCHEMA(String IP, String USER, String PASS) throws SQLException {
+    public List<String> GetSCHEMA() throws SQLException {
         getMetaData metaData = new getMetaData();
-        return metaData.GetSCHEMA(IP, USER, PASS);
+        return metaData.GetSCHEMA(meta.getIp(),meta.getUser(),meta.getSenha());
     }
 
-    public static List<String> getTABELAS(String IP, String USER, String PASS, String base) throws SQLException {
+    public  List<String> getTABELAS(String base) throws SQLException {
         getMetaData metaData = new getMetaData();
-        return metaData.getTABELAS(IP, USER, PASS, base);
+        return metaData.getTABELAS(meta.getIp(),meta.getUser(),meta.getSenha(), base);
     }
 
-    public static List<String> getNomeAtributo(String IP, String USER, String PASS, String base, String tabela) throws SQLException {
+    public  List<String> getNomeAtributo(String base, String tabela) throws SQLException {
         getMetaData metaData = new getMetaData();
-        return metaData.getNomeAtributo(IP, USER, PASS, base, tabela);
+        return metaData.getNomeAtributo(meta.getIp(),meta.getUser(),meta.getSenha(), base, tabela);
     }
     
   //----------------------------------------------fim return para View------------------------------------------  
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-
+        
         System.out.println("Digite o IP do banco de dados: ");
         String IP = scanner.nextLine();
         
@@ -95,6 +97,6 @@ public class MetaDataController {
         }
 
         scanner.close();
-    }
+    }*/
 }
 

@@ -27,7 +27,8 @@ import javax.swing.SwingConstants;
 //@ LUCAS OLHAR DECLARAÇÃO FIM PAGINA
 
 public class CadastroBd extends JFrame {
-
+    ConexaoController cont = new ConexaoController();
+    
     JTextField ip;
     JTextField user;
     JPasswordField pass;
@@ -55,7 +56,7 @@ public class CadastroBd extends JFrame {
 
 
         add(conectar);
-        conectar.addActionListener(this::connect);
+        conectar.addActionListener(this::setConnectButtonAction);
 
         ip = new JTextField();
         ip.setSize(373,23);
@@ -119,20 +120,16 @@ public class CadastroBd extends JFrame {
 
         JLabel nada = new JLabel();
         add(nada);
-
-
-
-
-        setVisible(true);
+        
+        
+        
     }
 
-    private void connect(ActionEvent actionEvent) {
+    private void setConnectButtonAction(ActionEvent actionEvent) {
         //Executar Conexão e enviar dados
-
-        String iptext = ip.getText();
-        String usertext = user.getText();
-        String passtext = pass.getText();
-
+        cont.botao();
+        
+               
     }
 
     //CONEXÃO COM BANCO FUNCIONANDO PERFEITO TESTAR @LUCAS "CONTROLLER.CONEXAOCONTROLLER.JAVA" TEM MEDODO PARA RODAR!
@@ -147,10 +144,6 @@ public class CadastroBd extends JFrame {
 
     public String getPassText() {
         return new String(pass.getPassword());
-    }
-
-    public void setConnectButtonAction(ActionListener actionListener) {
-        conectar.addActionListener(actionListener);
     }
 }
 

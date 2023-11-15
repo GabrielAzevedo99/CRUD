@@ -51,7 +51,8 @@ public class getMetaData {
     public static List<String> GetSCHEMA(String IP, String USER, String PASS) throws SQLException {
 
         //conexaoo getConexao = new conexaoo();
-        conexaoo getConexao = new conexaoo(IP, USER, PASS);
+        conexaoo getConexao = new conexaoo();
+        getConexao.setConexaoo(IP, USER, PASS);
         Connection connect = getConexao.getConnection();
         Statement statement = connect.createStatement();
         ResultSet resultSet = statement.executeQuery("SHOW DATABASES WHERE `Database` NOT IN ('mysql', 'information_schema', 'performance_schema', 'sys', 'phpmyadmin')");
@@ -67,7 +68,8 @@ public class getMetaData {
 
     public static List<String> getTABELAS(String IP, String USER, String PASS, String schema) throws SQLException {
 
-        conexaoo getConexao = new conexaoo(IP, USER, PASS);
+        conexaoo getConexao = new conexaoo();
+        getConexao.setConexaoo(IP, USER, PASS);
         getConexao.setIPbase(schema);
         Connection connect = getConexao.getConnection();
         Statement statement = connect.createStatement();
@@ -84,7 +86,8 @@ public class getMetaData {
 
     public static List<String> getNomeAtributo(String IP, String USER, String PASS, String schema, String tabela) throws SQLException {
 
-        conexaoo getConexao = new conexaoo(IP, USER, PASS);
+        conexaoo getConexao = new conexaoo();
+        getConexao.setConexaoo(IP, USER, PASS);
         getConexao.setIPbase(schema);
         Connection connect = getConexao.getConnection();
         //Statement statement = connect.createStatement();
@@ -117,7 +120,8 @@ public class getMetaData {
 
     public static List<String> getTipoAtributo(String IP, String USER, String PASS, String schema, String tabela) throws SQLException {
 
-        conexaoo getConexao = new conexaoo(IP, USER, PASS);
+        conexaoo getConexao = new conexaoo();
+        getConexao.setConexaoo(IP, USER, PASS);
         getConexao.setIPbase(schema);
         Connection connect = getConexao.getConnection();
         //Statement statement = connect.createStatement();
@@ -141,7 +145,8 @@ public class getMetaData {
     
     public static List<String> getRestricoes(String IP, String USER, String PASS, String schema, String tabela, String nome) throws SQLException {
 
-        conexaoo getConexao = new conexaoo(IP, USER, PASS);
+        conexaoo getConexao = new conexaoo();
+        getConexao.setConexaoo(IP, USER, PASS);
         getConexao.setIPbase(schema);
         Connection connect = getConexao.getConnection();
         //Statement statement = connect.createStatement();
@@ -179,7 +184,8 @@ public class getMetaData {
 
     public static List<String> getRegistros(String IP, String USER, String PASS, String schema, String tabela, String nome) throws SQLException {
 
-        conexaoo getConexao = new conexaoo(IP, USER, PASS);
+        conexaoo getConexao = new conexaoo();
+        getConexao.setConexaoo(IP, USER, PASS);
         getConexao.setIPbase(schema);
         Connection connect = getConexao.getConnection();
         //Statement statement = connect.createStatement();

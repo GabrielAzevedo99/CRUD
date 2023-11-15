@@ -9,12 +9,28 @@ public class conexaoo {
     private String USUARIO;
     private String SENHA;
 
-    public conexaoo(String IP, String USER, String PASS) {
+    public conexaoo() {
+        
+    }
+    
+    public void setConexaoo(String IP, String USER, String PASS) {
         this.URL = IP;
         this.USUARIO = USER;
         this.SENHA = PASS;
     }
-
+    
+    public String getIp(){
+        return URL;
+    }  
+    
+    public String getUser(){
+        return USUARIO;
+    } 
+    
+    public String getSenha(){
+        return SENHA;
+    } 
+    
     public void setIPbase(String base) {
         this.URL = URL + base;
     }

@@ -17,7 +17,8 @@ public class CrudController {
     }
 
     public void conectarAoBanco(String host, int porta, String nomeDoBanco, String usuario, String senha) {
-        this.conexao = new conexaoo("jdbc:mysql://" + host + ":" + porta + "/" + nomeDoBanco, usuario, senha);
+        this.conexao = new conexaoo();
+        conexao.setConexaoo("jdbc:mysql://" + host + ":" + porta + "/" + nomeDoBanco, usuario, senha);
     }
     
     //-------------------------------------------------CRUD EM SI----------------------------------------------------
