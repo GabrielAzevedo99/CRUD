@@ -12,6 +12,7 @@ public class connectDAO {
     private static String Url;
     private static String User;
     private static String Password;
+    private static String Schema;
 
     public  String getUrl() {
         return Url;
@@ -28,11 +29,7 @@ public class connectDAO {
     public void setUser(String User) {
         this.User = User;
     }
-
-    /**
-     *
-     * @return
-     */
+    
     public String getPassword() {
         return Password;
     }
@@ -40,5 +37,14 @@ public class connectDAO {
     public void setPassword(String Password) {
         this.Password = Password;
     }
+
+    public static String getSchema() {
+        return Schema;
+    }
+
+    public static void setSchema(String Schema) {
+        connectDAO.Schema = Schema;
+    }
+    
        
 }

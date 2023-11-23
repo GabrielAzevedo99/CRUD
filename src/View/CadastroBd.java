@@ -5,26 +5,20 @@
 package View;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import Controller.ConexaoController;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 
 
 /**
  *
- * @author GABRIEL
+ * @author Lucas
  */
-
-//@ LUCAS OLHAR DECLARAÇÃO FIM PAGINA
 
 public class CadastroBd extends JFrame {
     ConexaoController cont = new ConexaoController();
@@ -126,16 +120,13 @@ public class CadastroBd extends JFrame {
     }
 
     private void setConnectButtonAction(ActionEvent actionEvent) {
-        //Executar Conexão e enviar dados
-        cont.botao();
+        cont.botao(getIpText(),getUserText(),getPassText());
         
                
     }
-
-    //CONEXÃO COM BANCO FUNCIONANDO PERFEITO TESTAR @LUCAS "CONTROLLER.CONEXAOCONTROLLER.JAVA" TEM MEDODO PARA RODAR!
         
     public String getIpText() {
-        return ip.getText();
+        return ip.getText();              
     }
 
     public String getUserText() {

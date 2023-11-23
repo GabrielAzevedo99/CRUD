@@ -2,118 +2,154 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
+
+/**
+ *
+ * @author custo
+ */
 package View;
 
 
+import Controller.CrudController;
 import Controller.MetaDataController;
 import Model.connectDAO;
-import java.awt.Color;
-import static java.awt.Color.BLACK;
-import static java.awt.Color.red;
-import static java.awt.Color.white;
-import java.awt.Font;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.List;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-
-
-
-
 
 public class Main_p extends JFrame {
-    JLabel bdname;
-    JLabel bduser;
+    JLabel bdname, bduser;
     JButton sair;
     JComboBox<String> schema;
+    JPanel registros, contentPanel;
+    String selectedSchema;
+    JScrollPane scrollPane;
+    private CrudController crudController;
     
-    
+
     connectDAO dao = new connectDAO();
+    public void criarTabelaRegistro(String schema) {
+        try {
+            TabelaRegistro tabelaRegistro = new TabelaRegistro(schema);
 
-
-    public Main_p() throws SQLException{
+        } catch (SQLException | ClassNotFoundException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
+    public Main_p() throws SQLException, ClassNotFoundException {
         setTitle("Sistema de CRUD em JAVA");
-        setSize(1440,1024);
+        setSize(700, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setResizable(false);
-        setBackground(new Color(217,217,217));
-        int width = getWidth();
+        setLayout(new BorderLayout());
 
-        //adicionar variavel para armazenar nome da base
-        bdname = new JLabel();
-        bdname.setText(dao.getUrl());
-        bdname.setBounds(31,42,100,24);
+
+        bdname = new JLabel(dao.getUrl());
         bdname.setForeground(Color.GRAY);
-        
-        add(bdname);
-        
-        JLabel ipaddress = new JLabel();
-        ipaddress.setText("IP Address:");
-        ipaddress.setBounds(31,22,67,17);
-        add(ipaddress);
-        
-        
-        bduser = new JLabel();
-        bduser.setText(dao.getUser());
-        bduser.setBounds(223,42,100,24);
+
+        JLabel ipaddress = new JLabel("IP Address:");
+
+        bduser = new JLabel(dao.getUser());
         bduser.setForeground(Color.GRAY);
-        
-        add(bduser);
-        
-        JLabel user = new JLabel();
-        user.setText("User:");
-        user.setBounds(223,22,67,17);
-        add(user);
-        
-        
-        
-        sair = new JButton();
-        sair.setText("Sair");
-        sair.setBounds(444,20,83,19);
-        sair.setBackground(red);
-        sair.setForeground(white);
-        
-        add(sair);
-        
-        //-------------------------ComboBox
-        MetaDataController meta = new MetaDataController();
-       
-        List<String> lista = meta.GetSCHEMA();
 
-            for(String item : lista){
-                schema.addItem(item);
+        JLabel user = new JLabel("User:");
+
+        sair = new JButton("Sair");
+        sair.setBackground(Color.RED);
+        sair.setForeground(Color.WHITE);
+        sair.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dispose();  // Fecha a janela atual
             }
+        });
 
-        schema = new JComboBox();
-        schema.setBounds(140, 103, 373, 23);
+        MetaDataController meta = new MetaDataController();
+        schema = new JComboBox<>();
+        List<String> lista = meta.GetSCHEMA();
+        for (String item : lista) {
+            schema.addItem(item);
+        }
 
-        add(schema);
-            
-        //--------------------------------Fim ComboBox
+        JLabel schemas = new JLabel("Lista schemas");
+
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        panel.add(bdname, gbc);
+        gbc.gridy = 0;
+        panel.add(ipaddress, gbc);
+        gbc.gridx = 1;
+        gbc.gridy = 1;
+        panel.add(bduser, gbc);
+        gbc.gridy = 0;
+        panel.add(user, gbc);
+        gbc.gridx = 4;
+        gbc.gridy = 0;
+        panel.add(sair, gbc);
+        gbc.gridy = 1;
+        gbc.gridx = 3;
+        panel.add(schema, gbc);
+        gbc.gridx = 3;
+        gbc.gridy = 0;
+        //gbc.gridheight = 2;
+        panel.add(schemas, gbc);
+        add(panel, BorderLayout.NORTH);
+
+        contentPanel = new JPanel();
+        contentPanel.setLayout(new BorderLayout());
         
-        JLabel schemas = new JLabel();
-        schemas.setText("Lista schemas");
-        schemas.setBounds(31, 106, 95, 17);
-        
-        add(schemas);
-        
-        
-        
-        
-        
-        
-        JLabel fim = new JLabel();
-        add(fim);
+
+        scrollPane = new JScrollPane(contentPanel);
+        add(scrollPane);
+
+        this.crudController = new CrudController();
+
+        schema.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String selectedSchema = schema.getSelectedItem().toString();
+                    crudController.setSelectedSchema(selectedSchema);
+
+                    if (crudController != null) {
+                        crudController.conectarAoBanco();
+                        TabelaRegistro regs = new TabelaRegistro(selectedSchema);
+                        contentPanel.removeAll();
+                        contentPanel.add(regs);
+
+                        scrollPane.setViewportView(contentPanel);
+                    } else {
+                        System.out.println("crudController é nulo. Certifique-se de inicializá-lo corretamente.");
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    CrudController crudController = new CrudController();
+                    TabelaRegistro tabelaRegistro = new TabelaRegistro("");
+
+                } catch (SQLException | ClassNotFoundException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
     }
     
-    
-    
-    public static void main(String[] args) throws SQLException{               
-        Main_p main_p = new Main_p();
-        main_p.setVisible(true);
-    }
-
 }
+

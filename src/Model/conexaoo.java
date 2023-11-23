@@ -4,33 +4,16 @@ import java.sql.*;
 
 public class conexaoo {
     
-    //private String bd = null;
     private String URL;
     private String USUARIO;
     private String SENHA;
 
-    public conexaoo() {
-        
-    }
-    
-    public void setConexaoo(String IP, String USER, String PASS) {
+    public conexaoo(String IP, String USER, String PASS) {
         this.URL = IP;
         this.USUARIO = USER;
         this.SENHA = PASS;
     }
-    
-    public String getIp(){
-        return URL;
-    }  
-    
-    public String getUser(){
-        return USUARIO;
-    } 
-    
-    public String getSenha(){
-        return SENHA;
-    } 
-    
+
     public void setIPbase(String base) {
         this.URL = URL + base;
     }
@@ -46,7 +29,7 @@ public class conexaoo {
             // Estabelece a conexão com o banco de dados
             conexao = DriverManager.getConnection(URL, USUARIO, SENHA);
 
-            System.out.println("Conectou no banco de dados.");
+            System.out.println("Conectou no banco de dados. model");
 
         } catch (ClassNotFoundException e) {
             System.out.println("Erro: Não encontrou o driver do BD!");
