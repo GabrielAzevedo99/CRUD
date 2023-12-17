@@ -11,6 +11,7 @@ import View.atualizar;
 import View.excluir;
 import View.listar;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,7 +45,19 @@ public class viewController {
     }
     
     public void inserir(String tabela) throws SQLException, ClassNotFoundException{
-        inserir = new Inserir(tabela);
+        List<String> campos = meta.getNomeAtributo(dao.getUrl(), dao.getUser(), dao.getPassword(), dao.getSchema(), tabela);
+
+        List<String> camposParaInserir = new ArrayList<>(campos);
+
+        for (String campo : campos) {
+            List<String> restricoes = meta.getRestricoes(dao.getUrl(), dao.getUser(), dao.getPassword(), dao.getSchema(), tabela, campo);
+
+        if ("PRI".equals(restricoes.get(0)) && "auto_increment".equals(restricoes.get(1))) {
+            camposParaInserir.remove(campo);
+        }
+    }
+
+    inserir = new Inserir(tabela, camposParaInserir);
     
     }
     
@@ -62,13 +75,13 @@ public class viewController {
         crudController.excluirRegistro(tabela, id);
     }
     
-    public void crudInserir(String tabela,String nome) throws SQLException, ClassNotFoundException{
-        crudController.inserirRegistro(tabela, "nome",nome);
+    public void crudInserir(String tabela,List<String> campos,List<String> valor) throws SQLException, ClassNotFoundException{
+        for(String valores: valor){
+            System.out.println(valores);
+        }
+        crudController.inserirRegistro(tabela, campos, valor);
     }
     
-    public void crudListar(String tabela,String nome) throws SQLException, ClassNotFoundException{
-        crudController.inserirRegistro(tabela, "nome",nome);
-    }
     
     public void crudAtualizar(String tabela,String nome,int id) throws SQLException, ClassNotFoundException{
         crudController.atualizarRegistro(tabela, nome, id);

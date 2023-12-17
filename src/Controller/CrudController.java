@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
 
 public class CrudController {
@@ -40,11 +41,19 @@ public class CrudController {
     
     //-------------------------------------------------CRUD EM SI----------------------------------------------------
 
-    public void inserirRegistro(String tabela, String coluna, String valor) throws SQLException, ClassNotFoundException {
+    public void inserirRegistro(String tabela, List<String> campos,List<String> valores) throws SQLException, ClassNotFoundException {
         Connection connection = conexao.getConnection();
         try {
-            PreparedStatement pstmt = connection.prepareStatement("INSERT INTO " + tabela + " (" + coluna + ") VALUES (?)");
-            pstmt.setString(1, valor);
+            String camposStr = String.join(", ", campos);
+            String valoresStr = String.join(", ", campos.stream().map(c -> "?").collect(Collectors.toList()));
+
+            String query = "INSERT INTO " + tabela + " (" + camposStr + ") VALUES (" + valoresStr + ")";
+            PreparedStatement pstmt = connection.prepareStatement(query);
+
+            for (int i = 0; i < valores.size(); i++) {
+                pstmt.setString(i + 1, valores.get(i));
+            }
+            
             pstmt.executeUpdate();
             JOptionPane.showMessageDialog(null, "Registro inserido com sucesso.", "Sucesso", JOptionPane.PLAIN_MESSAGE);
             System.out.println("Registro inserido com sucesso.");
