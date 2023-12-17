@@ -4,11 +4,14 @@
  */
 package Controller;
 
+import Model.connectDAO;
+import Model.getMetaData;
 import View.Inserir;
 import View.atualizar;
 import View.excluir;
 import View.listar;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  *
@@ -20,11 +23,14 @@ public class viewController {
     private excluir excluir;
     private listar list;
     private CrudController crudController;
+    private connectDAO dao;
+    private getMetaData meta;
     
     
     
     public viewController() throws SQLException, ClassNotFoundException {
         this.crudController = new CrudController();
+        this.dao = new connectDAO();
         
         if (crudController != null) {
             crudController.conectarAoBanco();
@@ -33,7 +39,8 @@ public class viewController {
 
     
     public void listar(String tabela) throws SQLException, ClassNotFoundException{
-        crudController.listarRegistros(tabela);       
+        List<String> campos = meta.getNomeAtributo(dao.getUrl(),dao.getUser(), dao.getPassword(), dao.getSchema(), tabela);
+        crudController.listarRegistros(tabela, campos);       
     }
     
     public void inserir(String tabela) throws SQLException, ClassNotFoundException{

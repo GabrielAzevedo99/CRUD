@@ -1,6 +1,5 @@
 package Controller;
 
-import Model.Registro;
 import Model.conexaoo;
 import Model.connectDAO;
 import View.listar;
@@ -36,10 +35,7 @@ public class CrudController {
         System.out.println(dao.getSchema());
         
             this.conexao = new conexaoo(dao.getUrl() + dao.getSchema(), dao.getUser(), dao.getPassword());
-        /*} else {
-            // Se o esquema não estiver selecionado, você pode lidar com isso de acordo com sua lógica.
-            System.out.println("Nenhum esquema selecionado.");
-        }*/
+        
     }
     
     //-------------------------------------------------CRUD EM SI----------------------------------------------------
@@ -95,24 +91,23 @@ public class CrudController {
         }
     }
 
-    public void listarRegistros(String tabela) throws SQLException, ClassNotFoundException {
+    public void listarRegistros(String tabela, List<String> campos) throws SQLException, ClassNotFoundException {
         Connection connection = conexao.getConnection(); 
-        List<Registro> registros = new ArrayList<>();
+        List<String> registros = new ArrayList<>();
         try {
-            PreparedStatement pstmt = connection.prepareStatement("SELECT * FROM " + tabela);
+            String camposStr = String.join(", ", campos);
+            String query = "SELECT " + camposStr + " FROM " + tabela;
+
+            PreparedStatement pstmt = connection.prepareStatement(query);
             ResultSet resultSet = pstmt.executeQuery();
 
             while (resultSet.next()) {
-                // Ler os dados de cada registro
-                int registroId = resultSet.getInt("id");
-                String nome = resultSet.getString("nome");
-                // Adicione mais campos conforme necessário
+                for (String campo : campos) {
+                Object valorCampo = resultSet.getObject(campo);
+                System.out.println(campo + ": " + valorCampo);
+                registros.add(valorCampo.toString());
+                }
                 
-                registros.add(new Registro(registroId, nome));
-
-                System.out.println("ID: " + registroId);
-                System.out.println("Nome: " + nome);
-                // Imprima mais campos conforme necessário
                 System.out.println("--------------------------");
             }
         } catch (SQLException e) {
@@ -122,73 +117,8 @@ public class CrudController {
             conexao.desconectar(connection);
         }
         
-        listar listar = new listar(registros);
+        listar listar = new listar(registros,campos);
     }
-    
-    //-------------------------------------------------FIM CRUD----------------------------------------------------
-
-      /*public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        CrudController crud = new CrudController();
-        Scanner scanner = new Scanner(System.in);
-
-        
-
-        System.out.println("Digite o nome da tabela: ");
-        String tabela = scanner.nextLine();
-
-        while (true) {
-            System.out.println("Escolha uma ação:");
-            System.out.println("1. Inserir registro");
-            System.out.println("2. Atualizar registro");
-            System.out.println("3. Excluir registro");
-            System.out.println("4. Listar registros");
-            System.out.println("5. Sair");
-
-            int escolha = scanner.nextInt();
-            scanner.nextLine();
-
-            if (escolha == 5) {
-                break; // Sai do loop
-            }
-
-            switch (escolha) {
-                case 1:
-                    System.out.println("Digite o nome da coluna: ");
-                    String coluna = scanner.nextLine();
-
-                    System.out.println("Digite um valor: ");
-                    String valor = scanner.nextLine();
-
-                    crud.inserirRegistro(tabela, coluna, valor);
-                    break;
-                case 2:
-                    System.out.println("Digite o ID do registro a ser atualizado: ");
-                    int idAtualizacao = scanner.nextInt();
-                    scanner.nextLine(); // Limpar a nova linha
-
-                    System.out.println("Digite o nome da coluna: ");
-                    String colunaAtualizacao = scanner.nextLine();
-
-                    System.out.println("Digite o novo valor: ");
-                    String novoValor = scanner.nextLine();
-
-                    //crud.atualizarRegistro(tabela, colunaAtualizacao, novoValor, idAtualizacao);
-                    break;
-                case 3:
-                    System.out.println("Digite o ID do registro a ser excluído: ");
-                    int idExclusao = scanner.nextInt();
-                    scanner.nextLine();
-
-                    crud.excluirRegistro(tabela, idExclusao);
-                    break;
-                case 4:
-                    crud.listarRegistros(tabela);
-                    break;
-                default:
-                    System.out.println("Escolha uma ação válida.");
-                    break;
-            }
-        }*/
     }
 
 
