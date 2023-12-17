@@ -43,9 +43,9 @@ public class TabelaRegistro extends JPanel {
         viewController contro = new viewController();
 
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5); // Adicionando margens
+        gbc.insets = new Insets(5, 5, 5, 5);
 
-        Dimension buttonSize = new Dimension(100, 30); // Tamanho padrão para os botões
+        Dimension buttonSize = new Dimension(100, 30);
 
         for (String dado : tabela) {
             JLabel label = new JLabel(dado);

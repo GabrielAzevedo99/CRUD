@@ -5,11 +5,11 @@
 package View;
 
 import Controller.viewController;
-import Model.connectDAO;
 import java.awt.Color;
 import java.awt.Font;
-import static java.awt.GridBagConstraints.CENTER;
-import java.awt.GridLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -32,10 +32,8 @@ import javax.swing.JTextField;
 
 
 public class Inserir extends JDialog {
-    connectDAO dao = new connectDAO();
-
     private List<JTextField> textFields = new ArrayList<>();
-    private JButton update;
+    private JButton insert;
 
     public Inserir(String tabela, List<String> campos) {
         setTitle("Sistema de CRUD em JAVA - Inserir");
@@ -46,27 +44,35 @@ public class Inserir extends JDialog {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
         JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(campos.size() + 1, 1, 10, 10));
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.WEST;
 
-        for (String campo : campos) {
+        for (int i = 0; i < campos.size(); i++) {
+            String campo = campos.get(i);
             JLabel label = new JLabel(campo);
-            JTextField text = new JTextField();
+            JTextField text = new JTextField(20);
             textFields.add(text);
 
-            label.setSize(373, 23);
-            text.setSize(373, 15);
+            gbc.gridx = 0;
+            gbc.gridy = i;
+            panel.add(label, gbc);
 
-            panel.add(label);
-            panel.add(text);
+            gbc.gridx = 1;
+            gbc.gridy = i;
+            panel.add(text, gbc);
         }
 
-        update = new JButton();
-        update.setText("Inserir");
-        update.setSize(172, 36);
-        update.setFont(new Font("Inter", Font.BOLD, 16));
-        add(update);
+        insert = new JButton("Inserir");
+        insert.setFont(new Font("Inter", Font.BOLD, 16));
 
-        update.addActionListener(new ActionListener() {
+        gbc.gridx = 0;
+        gbc.gridy = campos.size();
+        gbc.gridwidth = 2;
+        panel.add(insert, gbc);
+
+        insert.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -87,8 +93,6 @@ public class Inserir extends JDialog {
                 dispose();
             }
         });
-
-        panel.add(update);
 
         JScrollPane scrollPane = new JScrollPane(panel);
         add(scrollPane);

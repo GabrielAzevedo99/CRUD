@@ -5,7 +5,6 @@
 package View;
 
 import Controller.viewController;
-import Model.connectDAO;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -25,17 +24,12 @@ import javax.swing.JTextField;
  * @author custo
  */
 public class excluir extends JDialog {
-    connectDAO dao = new connectDAO();
-    
     JTextField id;
-    JTextField nome;
     JLabel textoid;
-    JLabel textonome;
-    private int idnum;
-    private String novoNome;
+    private String idnum;
 
-    JButton update;
-    public excluir(String tabela){
+    JButton excluir;
+    public excluir(String tabela, String chave){
         setTitle("Sistema de CRUD em JAVA - Excluir");
         setSize(443,443);
         setLocationRelativeTo(null);
@@ -46,34 +40,35 @@ public class excluir extends JDialog {
         int width = getWidth();
 
 
-        update = new JButton();
-        update.setText("Atualizar");
-        update.setSize(172,36);
-        int conwi = update.getWidth();
-        update.setBounds(width/2 - conwi/2,340,172,36);
-        update.setFont(new Font("Inter",Font.BOLD,16));
-        System.out.println("teste");
+        excluir = new JButton();
+        excluir.setText("Excluir");
+        excluir.setSize(172,36);
+        int conwi = excluir.getWidth();
+        excluir.setBounds(width/2 - conwi/2,340,172,36);
+        excluir.setFont(new Font("Inter",Font.BOLD,16));
 
 
-        add(update);
-        update.addActionListener(new ActionListener() {
+        add(excluir);
+        excluir.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     String textoId = id.getText();
 
                     try {
-                        int valorId = Integer.parseInt(textoId);
+                        String valorId = textoId;
                         setIdnum(valorId);
 
                         dispose();
                     } catch (NumberFormatException ex) {
-                        JOptionPane.showMessageDialog(null, "Insira um valor válido no campo ID", "Erro", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Insira um valor válido em " + chave, "Erro", JOptionPane.ERROR_MESSAGE);
                     }
+                    
+                    
                     try {
                         
                         viewController view = new viewController();
                         
-                        view.crudExcluir(tabela,getIdnum());
+                        view.crudExcluir(tabela,getIdnum(), chave);
                         dispose();
                     } catch (SQLException ex) {
                         Logger.getLogger(Inserir.class.getName()).log(Level.SEVERE, null, ex);
@@ -84,7 +79,6 @@ public class excluir extends JDialog {
                 }
             });
         
-
         id = new JTextField();
         id.setSize(373,23);
         int ipwi = id.getWidth();
@@ -94,7 +88,7 @@ public class excluir extends JDialog {
         add(id);
 
 
-        textoid = new JLabel("Selecione o Id:");
+        textoid = new JLabel(chave);
         textoid.setFont(new Font("Inter",Font.BOLD,12));
         textoid.setSize(118,15);
         textoid.setBounds(36,118,118,15);
@@ -102,7 +96,7 @@ public class excluir extends JDialog {
         add(textoid);
         
 
-        JLabel texto = new JLabel("<HTML>"+"Entre com as informações que" +"<br>"+"deseja excluir"+"</HTML>");
+        JLabel texto = new JLabel("<HTML>"+"Entre com a Primary Key que" +"<br>"+"deseja excluir"+"</HTML>");
         texto.setSize(371,35);
         int textwi = texto.getWidth();
         texto.setBounds(width/2 - textwi/2,38,371,50);
@@ -118,11 +112,11 @@ public class excluir extends JDialog {
     }
 
 
-    public int getIdnum() {
+    public String getIdnum() {
         return idnum;
     }
 
-    public void setIdnum(int idnum) {
+    public void setIdnum(String idnum) {
         this.idnum = idnum;
     }
 

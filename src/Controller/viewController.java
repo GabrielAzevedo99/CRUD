@@ -52,27 +52,58 @@ public class viewController {
         for (String campo : campos) {
             List<String> restricoes = meta.getRestricoes(dao.getUrl(), dao.getUser(), dao.getPassword(), dao.getSchema(), tabela, campo);
 
-        if ("PRI".equals(restricoes.get(0)) && "auto_increment".equals(restricoes.get(1))) {
-            camposParaInserir.remove(campo);
+            if ("PRI".equals(restricoes.get(0)) && "auto_increment".equals(restricoes.get(1))) {
+                camposParaInserir.remove(campo);
+            }
         }
-    }
 
     inserir = new Inserir(tabela, camposParaInserir);
     
     }
     
     public void atualizar(String tabela) throws SQLException, ClassNotFoundException{
-        atualizar = new atualizar(tabela);
+        List<String> campos = meta.getNomeAtributo(dao.getUrl(), dao.getUser(), dao.getPassword(), dao.getSchema(), tabela);
+        String chave = new String();
+        
+        List<String> camposParaAtualizar = new ArrayList<>(campos);
+
+        for (String campo : campos) {
+            List<String> restricoes = meta.getRestricoes(dao.getUrl(), dao.getUser(), dao.getPassword(), dao.getSchema(), tabela, campo);
+
+            if ("PRI".equals(restricoes.get(0))) {
+                camposParaAtualizar.remove(campo);
+            }
+        }
+        
+        for (String campo : campos) {
+            List<String> restricoes = meta.getRestricoes(dao.getUrl(), dao.getUser(), dao.getPassword(), dao.getSchema(), tabela, campo);
+
+            if ("PRI".equals(restricoes.get(0))) {
+                 chave = campo; 
+            }
+        }
+        
+        atualizar = new atualizar(tabela,camposParaAtualizar, chave);
     }
     
     public void excluir(String tabela) throws SQLException, ClassNotFoundException{
-        excluir = new excluir(tabela);  
-        int id = excluir.getIdnum();
+        List<String> campos = meta.getNomeAtributo(dao.getUrl(), dao.getUser(), dao.getPassword(), dao.getSchema(), tabela);
+        String chave = new String();
+        
+        for (String campo : campos) {
+            List<String> restricoes = meta.getRestricoes(dao.getUrl(), dao.getUser(), dao.getPassword(), dao.getSchema(), tabela, campo);
+
+            if ("PRI".equals(restricoes.get(0))) {
+                 chave = campo; 
+            }
+        }
+        
+        excluir = new excluir(tabela, chave);  
     }
 
     
-    public void crudExcluir(String tabela,int id) throws SQLException, ClassNotFoundException{
-        crudController.excluirRegistro(tabela, id);
+    public void crudExcluir(String tabela,String id,String chave) throws SQLException, ClassNotFoundException{
+        crudController.excluirRegistro(tabela, id, chave);
     }
     
     public void crudInserir(String tabela,List<String> campos,List<String> valor) throws SQLException, ClassNotFoundException{
@@ -83,7 +114,18 @@ public class viewController {
     }
     
     
-    public void crudAtualizar(String tabela,String nome,int id) throws SQLException, ClassNotFoundException{
-        crudController.atualizarRegistro(tabela, nome, id);
+    public void crudAtualizar(String tabela,List<String> valores,String numeroid, String pk) throws SQLException, ClassNotFoundException{
+        List<String> campos = meta.getNomeAtributo(dao.getUrl(), dao.getUser(), dao.getPassword(), dao.getSchema(), tabela);
+        List<String> camposParaAtualizar = new ArrayList<>(campos);
+
+        for (String campo : campos) {
+            List<String> restricoes = meta.getRestricoes(dao.getUrl(), dao.getUser(), dao.getPassword(), dao.getSchema(), tabela, campo);
+
+            if ("PRI".equals(restricoes.get(0))) {
+                camposParaAtualizar.remove(campo);
+            }
+        }
+        
+        crudController.atualizarRegistro(tabela, valores, numeroid,camposParaAtualizar, pk);
     }
 }

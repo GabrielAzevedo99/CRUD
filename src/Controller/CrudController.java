@@ -39,7 +39,6 @@ public class CrudController {
         
     }
     
-    //-------------------------------------------------CRUD EM SI----------------------------------------------------
 
     public void inserirRegistro(String tabela, List<String> campos,List<String> valores) throws SQLException, ClassNotFoundException {
         Connection connection = conexao.getConnection();
@@ -65,14 +64,28 @@ public class CrudController {
         }
     }
 
-    public void atualizarRegistro(String tabela, String novoNome, int id) throws SQLException, ClassNotFoundException {
+    public void atualizarRegistro(String tabela, List<String> valores, String id, List<String> campos, String pk) throws SQLException, ClassNotFoundException {
         Connection connection = conexao.getConnection();
-        System.out.println(id);
         try {
-            PreparedStatement pstmt = connection.prepareStatement("UPDATE " + tabela + " SET nome = ? WHERE id = ?");
-            pstmt.setString(1, novoNome);
-            pstmt.setInt(2, id);
+            StringBuilder setClause = new StringBuilder();
+            for (String campo : campos) {
+                setClause.append(campo).append(" = ?, ");
+            }
+            setClause.delete(setClause.length() - 2, setClause.length());
+
+            String query = "UPDATE " + tabela + " SET " + setClause.toString() + " WHERE " + pk + " = ?";
+
+            PreparedStatement pstmt = connection.prepareStatement(query);
+
+            int index = 1;
+            for (String valor : valores) {
+                pstmt.setString(index++, valor);
+            }
+
+            pstmt.setString(index, id);
+
             pstmt.executeUpdate();
+
             JOptionPane.showMessageDialog(null, "Registro atualizado com sucesso.", "Sucesso", JOptionPane.PLAIN_MESSAGE);
             System.out.println("Registro atualizado com sucesso.");
         } catch (SQLException e) {
@@ -83,12 +96,12 @@ public class CrudController {
         }
     }
 
-    public void excluirRegistro(String tabela, int id) throws SQLException, ClassNotFoundException {
+    public void excluirRegistro(String tabela, String id, String chave) throws SQLException, ClassNotFoundException {
         Connection connection = conexao.getConnection();
         System.out.println(id);
         try {
-            PreparedStatement pstmt = connection.prepareStatement("DELETE FROM " + tabela + " WHERE id = ?");
-            pstmt.setInt(1, id);
+            PreparedStatement pstmt = connection.prepareStatement("DELETE FROM " + tabela + " WHERE " + chave + "= ?");
+            pstmt.setString(1, id);
             pstmt.executeUpdate();
             JOptionPane.showMessageDialog(null, "Registro excluído com sucesso.", "Sucesso", JOptionPane.PLAIN_MESSAGE);
             System.out.println("Registro excluído com sucesso.");

@@ -8,153 +8,109 @@ import Controller.viewController;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
-import Model.connectDAO;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-
-
-
 /**
  *
  * @author custo
  */
-
-
-
 public class atualizar extends JDialog {
-    connectDAO dao = new connectDAO();
-    
-    JTextField id;
-    JTextField nome;
-    JLabel textoid;
-    JLabel textonome;
-    private int idnum;
-    private String novoNome;
+    private List<JTextField> textFields = new ArrayList<>();
+    private JButton update;
 
-    JButton update;
-    public atualizar(String tabela){
+    public atualizar(String tabela, List<String> campos, String pk) {
         setTitle("Sistema de CRUD em JAVA - Atualizar");
-        setSize(443,443);
+        setSize(443, 443);
         setLocationRelativeTo(null);
         setResizable(false);
-        setBackground(new Color(217,217,217));
+        setBackground(new Color(217, 217, 217));
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        
-        int width = getWidth();
 
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(1, 1, 5, 5);
+        gbc.anchor = GridBagConstraints.WEST;
 
-        update = new JButton();
-        update.setText("Atualizar");
-        update.setSize(172,36);
-        int conwi = update.getWidth();
-        update.setBounds(width/2 - conwi/2,340,172,36);
-        update.setFont(new Font("Inter",Font.BOLD,16));
+        JLabel labelpk = new JLabel(pk);
+        JTextField textpk = new JTextField(20);
+        textFields.add(textpk);
+
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        panel.add(labelpk, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        panel.add(textpk, gbc);
+
+        for (int i = 0; i < campos.size(); i++) {
+            String campo = campos.get(i);
+            JLabel label = new JLabel(campo);
+            JTextField text = new JTextField(20);
+            textFields.add(text);
+
+            gbc.gridx = 0;
+            gbc.gridy = i + 2;
+            gbc.gridwidth = 1;
+            panel.add(label, gbc);
+
+            gbc.gridx = 1;
+            gbc.gridy = i + 2;
+            gbc.gridwidth = 1;
+            panel.add(text, gbc);
+        }
+
+        update = new JButton("Atualizar");
+        update.setFont(new Font("Inter", Font.BOLD, 16));
+
+        gbc.gridx = 0;
+        gbc.gridy = campos.size() + 4;
+        gbc.gridwidth = 3;
+        panel.add(update, gbc);
+
         update.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    String textoId = id.getText();
-                    try {
-                        int valorId = Integer.parseInt(textoId);
-                        setIdnum(valorId);
-                        setNovoNome(nome.getText());
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String textoId = textpk.getText();
 
-                        dispose();
-                    } catch (NumberFormatException ex) {
-                        JOptionPane.showMessageDialog(null, "Insira um valor válido no campo ID", "Erro", JOptionPane.ERROR_MESSAGE);
+                try {
+                    viewController view = new viewController();
+
+                    List<String> valores = new ArrayList<>();
+                    for (JTextField textField : textFields) {
+                        valores.add(textField.getText());
                     }
-                    try {
-                        
-                        viewController view = new viewController();
-                        
-                        view.crudAtualizar(tabela,getNovoNome(),getIdnum());
-                        dispose();
-                    } catch (SQLException ex) {
-                        Logger.getLogger(Inserir.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (ClassNotFoundException ex) {
-                        Logger.getLogger(Inserir.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+
+                    view.crudAtualizar(tabela, valores, textoId, pk);
                     dispose();
+                } catch (SQLException ex) {
+                    Logger.getLogger(atualizar.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(atualizar.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            });
+                dispose();
+            }
+        });
 
-
-        add(update);
-        
-
-        id = new JTextField();
-        id.setSize(373,23);
-        int ipwi = id.getWidth();
-        id.setBounds(width/2 - ipwi/2,141,373,23);
-        id.setBackground(Color.WHITE);
-
-        add(id);
-
-
-        textoid = new JLabel("Selecione o Id:");
-        textoid.setFont(new Font("Inter",Font.BOLD,12));
-        textoid.setSize(118,15);
-        textoid.setBounds(36,118,118,15);
-
-        add(textoid);
-
-
-        textonome = new JLabel("Nome:");
-        textonome.setFont(new Font("Inter",Font.BOLD,12));
-        textonome.setSize(118,15);
-        textonome.setBounds(36,177,118,15);
-
-
-        add(textonome);
-
-
-        nome = new JTextField();
-        nome.setSize(373,23);
-        int userwi = id.getWidth();
-        nome.setBounds(width/2 - userwi/2,200,373,23);
-        nome.setBackground(Color.WHITE);
-
-        add(nome);
-
-
-        JLabel texto = new JLabel("<HTML>"+"Entre com as informações que" +"<br>"+"deseja atualizar"+"</HTML>");
-        texto.setSize(371,35);
-        int textwi = texto.getWidth();
-        texto.setBounds(width/2 - textwi/2,38,371,50);
-        texto.setFont(new Font("Inter",Font.PLAIN,20));
-
-        add(texto);
-
-        JLabel nada = new JLabel();
-        add(nada);
-        
-        
+        JScrollPane scrollPane = new JScrollPane(panel);
+        add(scrollPane);
         setVisible(true);
     }
-
-
-    public int getIdnum() {
-        return idnum;
-    }
-
-    public void setIdnum(int idnum) {
-        this.idnum = idnum;
-    }
-
-    public String getNovoNome() {
-        return novoNome;
-    }
-
-    public void setNovoNome(String novoNome) {
-        this.novoNome = novoNome;
-    }
-
 }
